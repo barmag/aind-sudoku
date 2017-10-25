@@ -41,7 +41,25 @@ def naked_twins(values):
     """
 
     # Find all instances of naked twins
+    # twins = [(t1, t2) for t1 in candidates for t2 in peers[t1] if len(set(values[t1])-set(values[t2]==0)) for candidates in values.keys if len(values[candidates]) == 2]
+    candidates = [c for c in values.keys() if len(values[c]) == 2]
+    #c_values = {c: v for c, v in values.items() if len(v) == 2}
+    twins = [(t1, t2) for t1 in candidates for t2 in peers[t1] if  t1 != t2 and (set(values[t1]) == set(values[t2]))]
+    twin_boxes = set([t for t, _ in twins])
+    print(len(twins))
+    # remove duplicates
+    duplicates = []
+    unique_twins = [(a, b) for a, b in twins if not (a, b) in duplicates and not (b, a) in duplicates and not duplicates.append((a,b)) ]
+    print(unique_twins)
     # Eliminate the naked twins as possibilities for their peers
+    for b1, b2 in unique_twins:
+        twin_peers = set(peers[b1]) & set(peers[b2])
+        for p in twin_peers:
+            if p not in twin_boxes:
+                update_value = ''.join([c for c in values[p] if c not in values[b1]])
+                values = assign_value(values, p, update_value)
+        
+    return values
 
 def grid_values(grid):
     """
