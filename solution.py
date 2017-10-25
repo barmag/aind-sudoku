@@ -67,7 +67,18 @@ def display(values):
     Args:
         values(dict): The sudoku in dictionary form
     """
-    pass
+    """
+    Display the values as a 2-D grid.
+    Input: The sudoku in dictionary form
+    Output: None
+    """
+    width = 1+max(len(values[s]) for s in boxes)
+    line = '+'.join(['-'*(width*3)]*3)
+    for r in rows:
+        print(''.join(values[r+c].center(width)+('|' if c in '36' else '')
+                      for c in cols))
+        if r in 'CF': print(line)
+    return
 
 def eliminate(values):
     solved_values = [box for box in values.keys() if len(values[box]) == 1]
@@ -124,6 +135,9 @@ def solve(grid):
     Returns:
         The dictionary representation of the final sudoku grid. False if no solution exists.
     """
+    values = grid_values(grid)
+    result = search(values)
+    return result
 
 if __name__ == '__main__':
     diag_sudoku_grid = '2.............62....1....7...6..8...3...9...7...6..4...4....8....52.............3'
@@ -131,6 +145,7 @@ if __name__ == '__main__':
 
     try:
         from visualize import visualize_assignments
+        
         visualize_assignments(assignments)
 
     except SystemExit:
