@@ -3,11 +3,12 @@
 
 # Question 1 (Naked Twins)
 Q: How do we use constraint propagation to solve the naked twins problem?  
-A: *Student should provide answer here*
+A: Constraint propagation reduces the problem domain, and usually used iteratively with a search algorithm to reach a solution. Naked twins is a strategy of applying constraint propagation to Sudoko puzzle solving by taking advantage of the puzzle rules. First two boxes are selected that have exactly same two values and in the same peer proximity i.e. same, row, column, or three by three box. We can not know for sure which box has either value, but we know for sure that no other box in the same constraint peer can have either value, so we eliminate these values and get closer to the solution.
+The implementation is done via filtering the puzzle for boxes with two potential values then searching for boxes with exactly same value in same peer proximity. Set comparison is used to account for out of order placement. Then we iterate through twin pairs and remove any occurance of their values from other peers.
 
 # Question 2 (Diagonal Sudoku)
 Q: How do we use constraint propagation to solve the diagonal sudoku problem?  
-A: *Student should provide answer here*
+A: We add the two main daignoal lines of the puzzle to the list of row, column, and 3x3 box constraints. This forces the puzzle solver to consider the existance of a number only once in main daigonal lines in addition to the previous constaints.
 
 ### Install
 
