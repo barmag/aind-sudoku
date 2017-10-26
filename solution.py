@@ -12,8 +12,9 @@ boxes = cross(rows, cols)
 row_units = [cross(r, cols) for r in rows]
 column_units = [cross(rows, c) for c in cols]
 square_units = [cross(rs, cs) for rs in ('ABC','DEF','GHI') for cs in ('123','456','789')]
+# add main daigonals to the list of constraints
 diag_units = [[rows[i]+cols[i] for i in range(0,9)], [rows[i]+cols[8-i] for i in range(0,9)]]
-#print(diag_units)
+
 unitlist = row_units + column_units + square_units + diag_units
 units = dict((s, [u for u in unitlist if s in u]) for s in boxes)
 peers = dict((s, set(sum(units[s],[]))-set([s])) for s in boxes)
@@ -43,12 +44,11 @@ def naked_twins(values):
     """
 
     # Find all instances of naked twins
-    # twins = [(t1, t2) for t1 in candidates for t2 in peers[t1] if len(set(values[t1])-set(values[t2]==0)) for candidates in values.keys if len(values[candidates]) == 2]
+    # get all boxes with only two values
     candidates = [c for c in values.keys() if len(values[c]) == 2]
-    #c_values = {c: v for c, v in values.items() if len(v) == 2}
+    # find naked twins by comparing peers with exact values
     twins = [(t1, t2) for t1 in candidates for t2 in peers[t1] if  t1 != t2 and (set(values[t1]) == set(values[t2]))]
     twin_boxes = set([t for t, _ in twins])
-    #print(len(twins))
     # remove duplicates
     duplicates = []
     unique_twins = [(a, b) for a, b in twins if not (a, b) in duplicates and not (b, a) in duplicates and not duplicates.append((a,b)) ]
@@ -57,9 +57,8 @@ def naked_twins(values):
     for b1, b2 in unique_twins:
         twin_peers = set(peers[b1]) & set(peers[b2])
         for p in twin_peers:
-            if p not in twin_boxes:
-                update_value = ''.join([c for c in values[p] if c not in values[b1]])
-                values = assign_value(values, p, update_value)
+            update_value = ''.join([c for c in values[p] if c not in values[b1]])
+            values = assign_value(values, p, update_value)
         
     return values
 
