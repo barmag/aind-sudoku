@@ -12,7 +12,9 @@ boxes = cross(rows, cols)
 row_units = [cross(r, cols) for r in rows]
 column_units = [cross(rows, c) for c in cols]
 square_units = [cross(rs, cs) for rs in ('ABC','DEF','GHI') for cs in ('123','456','789')]
-unitlist = row_units + column_units + square_units
+diag_units = [[rows[i]+cols[i] for i in range(0,9)], [rows[i]+cols[8-i] for i in range(0,9)]]
+#print(diag_units)
+unitlist = row_units + column_units + square_units + diag_units
 units = dict((s, [u for u in unitlist if s in u]) for s in boxes)
 peers = dict((s, set(sum(units[s],[]))-set([s])) for s in boxes)
 
@@ -46,11 +48,11 @@ def naked_twins(values):
     #c_values = {c: v for c, v in values.items() if len(v) == 2}
     twins = [(t1, t2) for t1 in candidates for t2 in peers[t1] if  t1 != t2 and (set(values[t1]) == set(values[t2]))]
     twin_boxes = set([t for t, _ in twins])
-    print(len(twins))
+    #print(len(twins))
     # remove duplicates
     duplicates = []
     unique_twins = [(a, b) for a, b in twins if not (a, b) in duplicates and not (b, a) in duplicates and not duplicates.append((a,b)) ]
-    print(unique_twins)
+    #print(unique_twins)
     # Eliminate the naked twins as possibilities for their peers
     for b1, b2 in unique_twins:
         twin_peers = set(peers[b1]) & set(peers[b2])
@@ -122,6 +124,7 @@ def reduce_puzzle(values):
         solved_values_before = len([box for box in values.keys() if len(values[box]) == 1])
         values = eliminate(values)
         values = only_choice(values)
+        values = naked_twins(values)
         solved_values_after = len([box for box in values.keys() if len(values[box]) == 1])
         stalled = solved_values_before == solved_values_after
         if len([box for box in values.keys() if len(values[box]) == 0]):
